@@ -1,6 +1,6 @@
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import './index.css';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 const renderTime = ({ remainingTime }) => {
   const currentTime = useRef(remainingTime);
@@ -43,46 +43,49 @@ const renderTime = ({ remainingTime }) => {
 };
 
 export default function App() {
-  const [isPlay, setIsPlay] = useState(false)
-  const [durationTimer, setDurationTimer] = useState(10);
-  const progressRef = useRef(null);
+  const [isPlay, setIsPlay] = useState(false);
+  const [durationTimer, setDurationTimer] = useState(0);
 
   const toggleTimer = () => {
-    setIsPlay(!isPlay)
-  }
+    setIsPlay(!isPlay);
+  };
 
-  useEffect(() => {
-    if (!isPlay) { 
-    
-    }
-  }, [])
-  
+  const submitTimer = (e) => {
+    e.preventDefault();
+    setDurationTimer(e.target.time.value);
+    console.dir(e.target.time);
+
+    isPlay ? (e.target.time.disabled = true) : (e.target.time.disabled = false);
+  };
 
   return (
-    <div className="wrapper">
-      <input
-        placeholder="Set timer duration"
-        type="number"
-        name="time"
-        className="input"
-      />
+    <form onSubmit={submitTimer}>
+      <div className="wrapper">
+        <input
+          placeholder="Set timer duration"
+          type="number"
+          name="time"
+          className="input"
+        />
 
-      <CountdownCircleTimer
-        isPlaying
-        size={300}
-        strokeWidth={10}
-        duration={durationTimer}
-        colors={['#3ffe00', '#F7B801', '#A30000', '#A30000']}
-        colorsTime={[7, 5, 2, 0]}
-      >
-        {/* {({ remainingTime }) => remainingTime} */}
-        {renderTime}
-      </CountdownCircleTimer>
-      <div className="button-wrapp">
-        <button className="set-timer" type="button" onClick={toggleTimer}>
-          <span className="button_top"> { isPlay ? "SET" : "STOP"} </span>
-        </button>
+        <CountdownCircleTimer
+          isPlaying={isPlay}
+          size={300}
+          strokeWidth={10}
+          duration={durationTimer}
+          colors={['#3ffe00', '#F7B801', '#A30000', '#A30000']}
+          colorsTime={[7, 5, 2, 0]}
+        >
+          {/* {({ remainingTime }) => remainingTime} */}
+          {renderTime}
+        </CountdownCircleTimer>
+
+        <div className="button-wrapp">
+          <button className="set-timer" type="submit" onClick={toggleTimer}>
+            <span className="button_top"> {isPlay ? 'STOP' : 'SET'} </span>
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 }
